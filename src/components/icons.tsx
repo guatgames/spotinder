@@ -93,6 +93,15 @@ export function PlayIcon({ size = 12, className = '' }: IconProps) {
   )
 }
 
+export function PauseIcon({ size = 12, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <rect x="6" y="4.5" width="4" height="15" rx="1.2" />
+      <rect x="14" y="4.5" width="4" height="15" rx="1.2" />
+    </svg>
+  )
+}
+
 export function MusicIcon({ size = 18, className = '' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" {...base} className={className}>

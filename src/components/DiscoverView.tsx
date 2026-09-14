@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { RefreshIcon } from './icons'
 import { Deck } from './Deck'
 import type { SwipeDirection } from './TrackCard'
 import type { DeezerTrack } from '../types/deezer'
+import { playPreview, stopPreview } from '../services/preview'
 
 interface DiscoverViewProps {
   queue: DeezerTrack[]
@@ -21,6 +23,14 @@ export function DiscoverView({
   onRefill,
   onSwipe,
 }: DiscoverViewProps) {
+  // Auto-play the top card's preview; a swipe swaps the top card, so the next
+  // track starts automatically. Leaving Discover stops the preview.
+  useEffect(() => {
+    const top = queue[0]
+    if (top) playPreview(top.id, top.preview)
+    return () => stopPreview()
+  }, [queue])
+
   return (
     <div className="deck-stage">
       <motion.div

@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { deezer, DeezerError } from '../services/deezer'
 import type { DeezerTrack } from '../types/deezer'
 import { HeartFilledIcon, HeartIcon, SearchIcon } from './icons'
+import { PreviewButton } from './PreviewButton'
 
 interface SearchViewProps {
   likedIds: Set<number>
@@ -137,6 +138,11 @@ export function SearchView({ likedIds, onLike, onUnlike }: SearchViewProps) {
                     <span className="shrink-0 text-[11px] text-mist">
                       {formatDuration(track.duration)}
                     </span>
+                    <PreviewButton
+                      track={track}
+                      iconSize={12}
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-frost transition-all hover:border-valid/60 hover:text-valid active:scale-90"
+                    />
                     <button
                       type="button"
                       aria-label={liked ? 'Remove from liked' : 'Add to liked'}

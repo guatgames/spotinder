@@ -96,7 +96,7 @@ export function Deck({ queue, loading, error, onSwipe, onRefill }: DeckProps) {
       <div className="deck-viewport">
         <div className="deck-card">
           <div className="glass flex h-full flex-col items-center justify-center gap-3 rounded-[26px] p-8 text-center">
-            <p className="text-sm font-medium text-frost">Couldn't load the vibe</p>
+            <p className="text-sm font-medium text-frost">Couldn't load your deck</p>
             <p className="max-w-[26ch] text-xs leading-relaxed text-ash">{error}</p>
             <button
               type="button"

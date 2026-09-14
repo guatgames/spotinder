@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { deezer, DeezerError } from '../services/deezer'
@@ -88,6 +88,30 @@ export function ArtistsView({
   const [results, setResults] = useState<DeezerArtist[]>([])
   const [searching, setSearching] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const debounceRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current !== null) window.clearTimeout(debounceRef.current)
+    }
+  }, [])
+
+  // Inline-as-you-type search: fires after every second letter (debounced),
+  // and Enter triggers it immediately via the form submit.
+  function scheduleSearch(term: string) {
+    if (debounceRef.current !== null) window.clearTimeout(debounceRef.current)
+    const value = term.trim()
+    debounceRef.current = window.setTimeout(() => {
+      debounceRef.current = null
+      if (value.length < 2) {
+        setResults([])
+        setError(null)
+        setSearching(false)
+        return
+      }
+      void runSearch(term)
+    }, 250)
+  }
 
   async function runSearch(q: string) {
     const term = q.trim()
@@ -108,6 +132,7 @@ export function ArtistsView({
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
+    if (debounceRef.current !== null) window.clearTimeout(debounceRef.current)
     void runSearch(query)
   }
 
@@ -134,9 +159,10 @@ export function ArtistsView({
           <input
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') void runSearch(query)
+            onChange={(event) => {
+              const value = event.target.value
+              setQuery(value)
+              scheduleSearch(value)
             }}
             placeholder="Search artists to like…"
             className="w-full bg-transparent text-sm text-frost placeholder:text-mist focus:outline-none"
@@ -152,37 +178,22 @@ export function ArtistsView({
       {error && <p className="pt-3 text-xs text-blush">{error}</p>}
 
       {results.length > 0 && (
-        <div className="pt-5">
-          <p className="pb-2 text-[11px] text-mist">Results for “{query}”</p>
-          <div className="flex flex-wrap gap-3">
-            <AnimatePresence initial={false}>
-              {results.map((artist) => {
-                const isSelected = selected.some((a) => a.id === artist.id)
-                return (
-                  <motion.button
-                    key={artist.id}
-                    type="button"
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    onClick={() => onToggle(artist)}
-                    className={`flex items-center gap-2.5 rounded-full border pl-1.5 pr-4 py-1.5 transition-colors ${
-                      isSelected
-                        ? 'border-brand bg-brand/15 text-frost'
-                        : 'border-white/10 text-ash hover:border-white/25 hover:text-frost'
-                    }`}
-                    aria-pressed={isSelected}
-                  >
-                    <span className="relative h-7 w-7 overflow-hidden rounded-full ring-1 ring-inset ring-white/20">
-                      <ArtistAvatar artist={artist} />
-                    </span>
-                    <span className="text-sm font-medium">{artist.name}</span>
-                    {isSelected && <CheckIcon size={14} className="text-brand" />}
-                  </motion.button>
-                )
-              })}
-            </AnimatePresence>
+        <div className="pt-6">
+          <div className="flex items-center justify-between pb-3">
+            <h2 className="text-sm font-semibold text-frost">Results for “{query}”</h2>
+            <span className="text-[11px] text-mist">
+              {results.length} found
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-5">
+            {results.map((artist) => (
+              <ArtistTile
+                key={artist.id}
+                artist={artist}
+                selected={selected.some((a) => a.id === artist.id)}
+                onToggle={onToggle}
+              />
+            ))}
           </div>
         </div>
       )}

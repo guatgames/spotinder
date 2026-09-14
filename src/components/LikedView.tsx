@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { DeezerTrack } from '../types/deezer'
 import { HeartFilledIcon, NopeIcon } from './icons'
+import { PreviewButton } from './PreviewButton'
 
 interface LikedViewProps {
   tracks: DeezerTrack[]
@@ -49,6 +50,11 @@ export function LikedView({ tracks, onRemove }: LikedViewProps) {
                         loading="lazy"
                       />
                       <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <PreviewButton
+                        track={track}
+                        iconSize={14}
+                        className="absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur transition-all hover:bg-black/70"
+                      />
                       <button
                         type="button"
                         aria-label={`Remove ${track.title}`}

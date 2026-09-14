@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useTransform } from 'framer-motion'
 import type { DeezerTrack } from '../types/deezer'
+import { PreviewButton } from './PreviewButton'
 
 export type SwipeDirection = 'nope' | 'like' | 'love'
 
@@ -130,6 +131,13 @@ export function TrackCard({ track, pending, onAnimationComplete, onDragEnd }: Tr
       }}
     >
       <CardFace track={track} />
+
+      <PreviewButton
+        track={track}
+        stopDrag
+        iconSize={18}
+        className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/40 text-white backdrop-blur-md transition-all hover:bg-black/60 active:scale-90"
+      />
 
       <motion.div className="pointer-events-none absolute left-5 top-7" style={{ opacity: likeOpacity }}>
         <span className="-rotate-[14deg] border-4 border-valid px-3 py-1 text-3xl font-extrabold tracking-[0.14em] text-valid shadow-[0_6px_20px_rgba(0,0,0,0.45)]">
