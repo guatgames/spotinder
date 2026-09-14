@@ -10,7 +10,7 @@ export function PageHeader({ active, onNavigate }: PageHeaderProps) {
   return (
     <header className="page-header">
       <div className="flex items-center gap-2.5">
-        <img src="/public/logo.png" alt="logo" className='size-8 rounded-2xl' />
+        <img src="logo.png" alt="logo" className='size-8 rounded-2xl' />
         <div className="hidden leading-tight sm:block">
           <p className="text-[13px] font-semibold tracking-tight text-frost">Spotinder</p>
           <p className="text-[10px] text-mist">swipe to your next listen</p>
