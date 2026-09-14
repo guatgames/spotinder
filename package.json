@@ -17,7 +17,7 @@
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@eslint/js": "^10.0.1",
-    "@netlify/functions": "^3.0.0",
+    "@netlify/edge-functions": "^4.0.0",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tailwindcss/vite": "^4.0.0",
     "@types/babel__core": "^7.20.5",

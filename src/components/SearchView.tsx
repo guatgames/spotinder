@@ -51,8 +51,8 @@ export function SearchView({ likedIds, onLike, onUnlike }: SearchViewProps) {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      <div className="px-6 pt-6 pb-4">
+    <div className="mx-auto w-full max-w-3xl">
+      <div className="pb-4">
         <h1 className="text-2xl font-bold tracking-tight text-frost">Search</h1>
         <p className="pt-1 text-sm text-ash">Find any track in the Deezer catalog.</p>
 
@@ -90,7 +90,7 @@ export function SearchView({ likedIds, onLike, onUnlike }: SearchViewProps) {
         )}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-8">
+      <div className="pb-8">
         {error && <p className="pb-4 text-xs text-blush">{error}</p>}
 
         {searched && results.length > 0 && (

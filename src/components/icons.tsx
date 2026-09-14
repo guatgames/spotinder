@@ -102,3 +102,41 @@ export function MusicIcon({ size = 18, className = '' }: IconProps) {
     </svg>
   )
 }
+
+export function VinylIcon({ size = 18, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M12 3v3.2M12 17.8V21M21 12h-3.2M6.2 12H3" />
+    </svg>
+  )
+}
+
+export function SparklesIcon({ size = 18, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} className={className}>
+      <path d="M12 3.5 13.6 9a4 4 0 0 0 2.9 2.9l5.5 1.6-5.5 1.6a4 4 0 0 0-2.9 2.9L12 23.5" />
+      <path d="M5 4l.8 2.5L8.3 7.3 5.8 8 5 10.5 4.2 8 1.7 7.3 4.2 6.5 5 4Z" />
+    </svg>
+  )
+}
+
+export function CheckIcon({ size = 16, className = '' }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="m5 12.5 4.5 4.5L19 7.5" />
+    </svg>
+  )
+}

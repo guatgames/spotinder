@@ -9,8 +9,8 @@ interface LikedViewProps {
 
 export function LikedView({ tracks, onRemove }: LikedViewProps) {
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      <div className="px-6 pt-6 pb-4">
+    <div className="mx-auto w-full max-w-6xl">
+      <div className="pb-4">
         <h1 className="text-2xl font-bold tracking-tight text-frost">Liked</h1>
         <p className="pt-1 text-sm text-ash">
           {tracks.length === 0
@@ -19,7 +19,7 @@ export function LikedView({ tracks, onRemove }: LikedViewProps) {
         </p>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-8">
+      <div className="pb-8">
         {tracks.length === 0 ? (
           <div className="glass mx-auto mt-10 flex max-w-xs flex-col items-center gap-3 rounded-3xl p-8 text-center">
             <span className="text-2xl text-mist">♡</span>

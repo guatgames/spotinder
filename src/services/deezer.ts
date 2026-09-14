@@ -12,7 +12,7 @@ import type {
 
 const PROXY_BASE =
   (import.meta.env.VITE_DEEZER_PROXY_BASE as string | undefined) ??
-  '/.netlify/functions/deezer-proxy'
+  '/deezer-proxy'
 
 export class DeezerError extends Error {
   readonly code: number

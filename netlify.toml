@@ -5,6 +5,11 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Deezer API proxy as a Netlify Edge Function
+[[edge_functions]]
+  path = "/deezer-proxy"
+  function = "deezer-proxy"
+
 # SPA fallback: serve index.html for client-side routes
 [[redirects]]
   from = "/*"

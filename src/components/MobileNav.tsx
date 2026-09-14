@@ -1,30 +1,23 @@
 import { motion } from 'framer-motion'
-import type { ViewId } from './Sidebar'
-import { CompassIcon, HeartIcon, SearchIcon } from './icons'
+import { NAV_ITEMS } from './navigation'
+import type { ViewId } from './navigation'
 
 interface MobileNavProps {
   active: ViewId
-  likedCount: number
   onNavigate: (view: ViewId) => void
 }
 
-const TABS: { id: ViewId; label: string; icon: typeof CompassIcon }[] = [
-  { id: 'discover', label: 'Discover', icon: CompassIcon },
-  { id: 'liked', label: 'Liked', icon: HeartIcon },
-  { id: 'search', label: 'Search', icon: SearchIcon },
-]
-
-export function MobileNav({ active, likedCount, onNavigate }: MobileNavProps) {
+export function MobileNav({ active, onNavigate }: MobileNavProps) {
   return (
     <nav className="mobile-tabbar glass" aria-label="Primary">
-      {TABS.map((tab) => {
-        const isActive = tab.id === active
-        const Icon = tab.icon
+      {NAV_ITEMS.map((item) => {
+        const isActive = item.id === active
+        const Icon = item.icon
         return (
           <button
-            key={tab.id}
+            key={item.id}
             type="button"
-            onClick={() => onNavigate(tab.id)}
+            onClick={() => onNavigate(item.id)}
             className="relative flex flex-1 flex-col items-center gap-1 rounded-2xl py-2 text-mist"
             aria-current={isActive ? 'page' : undefined}
           >
@@ -37,8 +30,7 @@ export function MobileNav({ active, likedCount, onNavigate }: MobileNavProps) {
             )}
             <Icon size={20} className={`relative ${isActive ? 'text-brand' : ''}`} />
             <span className={`relative text-[10px] font-medium ${isActive ? 'text-frost' : ''}`}>
-              {tab.label}
-              {tab.id === 'liked' && likedCount > 0 ? ` · ${likedCount}` : ''}
+              {item.label}
             </span>
           </button>
         )

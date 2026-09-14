@@ -12,7 +12,6 @@ interface DeckProps {
   queue: DeezerTrack[]
   loading: boolean
   error: string | null
-  vibe: string
   onSwipe: (direction: SwipeDirection) => void
   onRefill: () => void
 }
@@ -61,7 +60,7 @@ function DecisionButton({
   )
 }
 
-export function Deck({ queue, loading, error, vibe, onSwipe, onRefill }: DeckProps) {
+export function Deck({ queue, loading, error, onSwipe, onRefill }: DeckProps) {
   const [pending, setPending] = useState<SwipeDirection | null>(null)
   const topTrack = queue[0] ?? null
   const prevTopId = useRef(topTrack?.id ?? null)
@@ -118,9 +117,9 @@ export function Deck({ queue, loading, error, vibe, onSwipe, onRefill }: DeckPro
         <div className="deck-card">
           <div className="glass flex h-full flex-col items-center justify-center gap-3 rounded-[26px] p-8 text-center">
             <span className="brand-mark" aria-hidden="true" />
-            <p className="text-base font-semibold text-frost">That's the whole {vibe} deck</p>
+            <p className="text-base font-semibold text-frost">That's the whole deck</p>
             <p className="max-w-[28ch] text-xs leading-relaxed text-ash">
-              You swiped through it. Pull a fresh set of tracks to keep going.
+              You swiped through your artist picks. Pull a fresh stack of tracks to keep going.
             </p>
             <button
               type="button"
@@ -128,7 +127,7 @@ export function Deck({ queue, loading, error, vibe, onSwipe, onRefill }: DeckPro
               className="mt-2 flex items-center gap-2 rounded-full bg-gradient-to-r from-brand to-magenta px-5 py-2.5 text-xs font-semibold text-white transition-transform active:scale-95"
             >
               <RefreshIcon size={14} />
-              New {vibe} picks
+              New picks
             </button>
           </div>
         </div>

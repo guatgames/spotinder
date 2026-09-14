@@ -20,9 +20,9 @@ export default defineConfig([
     },
   },
   {
-    files: ['netlify/functions/**/*.ts'],
+    files: ['netlify/edge-functions/**/*.ts'],
     languageOptions: {
-      globals: globals.node,
+      globals: globals.denoBuiltin,
     },
   },
 ])
