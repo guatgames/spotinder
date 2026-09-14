@@ -100,3 +100,20 @@ export async function fetchDeckTracks(
 
   return [...shuffle(primary), ...shuffle(secondary)]
 }
+
+// Related-artist suggestions for the Artists section: neighbors of the liked
+// artists, minus anyone already liked.
+export async function getArtistRecommendations(
+  artistIds: number[],
+  limit = 10,
+): Promise<DeezerArtist[]> {
+  const likedIds = new Set(artistIds)
+  const batches = await Promise.all(
+    artistIds
+      .slice(0, 4)
+      .map((id) => deezer.getArtistRelated(id, 12).catch(() => null)),
+  )
+  return uniqueById(batches.flatMap((batch) => batch?.data ?? []))
+    .filter((artist) => !likedIds.has(artist.id))
+    .slice(0, limit)
+}

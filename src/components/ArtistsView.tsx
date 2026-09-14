@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { deezer, DeezerError } from '../services/deezer'
+import { getArtistRecommendations } from '../services/deck'
 import type { DeezerArtist } from '../types/deezer'
 import { CheckIcon, SearchIcon } from './icons'
 
@@ -78,6 +79,50 @@ function ArtistTile({ artist, selected, onToggle }: ArtistTileProps) {
   )
 }
 
+function SectionHeading({
+  title,
+  hint,
+  trailing,
+}: {
+  title: string
+  hint?: string
+  trailing?: string
+}) {
+  return (
+    <div className="flex items-center justify-between pb-3">
+      <div>
+        <h2 className="text-sm font-semibold text-frost">{title}</h2>
+        {hint && <p className="pt-0.5 text-[11px] text-mist">{hint}</p>}
+      </div>
+      {trailing && <span className="shrink-0 text-[11px] text-mist">{trailing}</span>}
+    </div>
+  )
+}
+
+function ArtistGrid({
+  artists,
+  selected,
+  onToggle,
+}: {
+  artists: DeezerArtist[]
+  selected: DeezerArtist[]
+  onToggle: (artist: DeezerArtist) => void
+}) {
+  if (artists.length === 0) return null
+  return (
+    <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-5">
+      {artists.map((artist) => (
+        <ArtistTile
+          key={artist.id}
+          artist={artist}
+          selected={selected.some((a) => a.id === artist.id)}
+          onToggle={onToggle}
+        />
+      ))}
+    </div>
+  )
+}
+
 export function ArtistsView({
   defaults,
   selected,
@@ -88,6 +133,7 @@ export function ArtistsView({
   const [results, setResults] = useState<DeezerArtist[]>([])
   const [searching, setSearching] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [recommendations, setRecommendations] = useState<DeezerArtist[]>([])
   const debounceRef = useRef<number | null>(null)
 
   useEffect(() => {
@@ -95,6 +141,24 @@ export function ArtistsView({
       if (debounceRef.current !== null) window.clearTimeout(debounceRef.current)
     }
   }, [])
+
+  // Recommendations are derived from the liked artists, so refresh as the set
+  // changes.
+  useEffect(() => {
+    const ids = selected.map((artist) => artist.id)
+    if (ids.length === 0) return
+    let cancelled = false
+    getArtistRecommendations(ids)
+      .then((artists) => {
+        if (!cancelled) setRecommendations(artists)
+      })
+      .catch(() => {
+        if (!cancelled) setRecommendations([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [selected])
 
   // Inline-as-you-type search: fires after every second letter (debounced),
   // and Enter triggers it immediately via the form submit.
@@ -136,6 +200,9 @@ export function ArtistsView({
     void runSearch(query)
   }
 
+  const showRecs = selected.length > 0
+  const recsLoading = showRecs && recommendations.length === 0
+
   return (
     <div className="mx-auto w-full max-w-3xl">
       <motion.div
@@ -148,8 +215,8 @@ export function ArtistsView({
         </h1>
         <p className="max-w-[46ch] pt-2 text-sm leading-relaxed text-ash">
           {landing
-            ? 'Select a few artists — or all of them — and Spotinder builds your swipeable deck. You can fine-tune this anytime.'
-            : 'These artists seed your Discover deck. Search to add more, or uncheck any you’re bored of.'}
+            ? 'Pick from the chart, our recommendations, or search — every artist you like seeds your Discover deck.'
+            : 'Your set, personalized picks that learn from it, and today’s chart. Uncheck any artist to drop them.'}
         </p>
       </motion.div>
 
@@ -178,41 +245,50 @@ export function ArtistsView({
       {error && <p className="pt-3 text-xs text-blush">{error}</p>}
 
       {results.length > 0 && (
-        <div className="pt-6">
-          <div className="flex items-center justify-between pb-3">
-            <h2 className="text-sm font-semibold text-frost">Results for “{query}”</h2>
-            <span className="text-[11px] text-mist">
-              {results.length} found
-            </span>
-          </div>
-          <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-5">
-            {results.map((artist) => (
-              <ArtistTile
-                key={artist.id}
-                artist={artist}
-                selected={selected.some((a) => a.id === artist.id)}
-                onToggle={onToggle}
-              />
-            ))}
-          </div>
-        </div>
+        <section className="pt-6">
+          <SectionHeading
+            title={`Results for “${query}”`}
+            trailing={`${results.length} found`}
+          />
+          <ArtistGrid artists={results} selected={selected} onToggle={onToggle} />
+        </section>
       )}
 
-      <div className="pt-8">
-        <div className="pb-3">
-          <h2 className="text-sm font-semibold text-frost">Top 10 right now</h2>
-        </div>
-        <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-5">
-          {defaults.map((artist) => (
-            <ArtistTile
-              key={artist.id}
-              artist={artist}
-              selected={selected.some((a) => a.id === artist.id)}
+      <section className="pt-8">
+        <SectionHeading
+          title="Your artists"
+          hint={
+            selected.length
+              ? 'Tap an artist to remove them.'
+              : 'Nothing picked yet — tap any artist below to start.'
+          }
+          trailing={selected.length ? `${selected.length} selected` : undefined}
+        />
+        <ArtistGrid artists={selected} selected={selected} onToggle={onToggle} />
+      </section>
+
+      {showRecs && (
+        <section className="pt-8">
+          <SectionHeading
+            title="Recommendations"
+            hint="Related artists worth adding to your set."
+          />
+          {recsLoading ? (
+            <p className="text-xs text-mist">Crunching related artists…</p>
+          ) : (
+            <ArtistGrid
+              artists={recommendations}
+              selected={selected}
               onToggle={onToggle}
             />
-          ))}
-        </div>
-      </div>
+          )}
+        </section>
+      )}
+
+      <section className="pt-8">
+        <SectionHeading title="Top 10 right now" hint="Today’s global chart." />
+        <ArtistGrid artists={defaults} selected={selected} onToggle={onToggle} />
+      </section>
     </div>
   )
 }

@@ -36,7 +36,8 @@ Function proxy.
 ## Structure
 
 - `src/components/` — `PageHeader` + `MobileNav` (shared nav), `Deck` /
-  `TrackCard` (swipe stack, like · nope · love), `ArtistsView`, `DiscoverView`,
+  `TrackCard` (swipe stack, like · nope · love), `ArtistsView` (liked artists,
+  related recommendations, Top-10 chart), `DiscoverView`,
   `SearchView`, `LikedView`, `navigation.ts` (nav meta), `icons`
 - `src/services/deezer.ts` — proxy client (`searchTracks`, `getCharts`, `getTrack`,
   `getAlbum`, `getArtist`, `getArtistTopTracks`, `getSuggestions`)
