@@ -84,6 +84,12 @@ export const deezer = {
       params: { limit },
     }),
 
+  getArtistRelated: (id: number, limit = 12) =>
+    proxy<{ data: DeezerArtist[] }>({
+      endpoint: `/artist/${id}/related`,
+      params: { limit },
+    }),
+
   getCharts: (limit = 50) =>
     proxy<DeezerChartResponse>({
       endpoint: '/chart/0',

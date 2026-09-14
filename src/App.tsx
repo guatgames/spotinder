@@ -8,6 +8,7 @@ import { LikedView } from './components/LikedView'
 import { ArtistsView } from './components/ArtistsView'
 import { TOP_ARTISTS } from './data/defaultArtists'
 import { fetchDeckTracks } from './services/deck'
+import type { DeckSeeds } from './services/deck'
 import { deezer, DeezerError } from './services/deezer'
 import type { DeezerArtist, DeezerTrack } from './types/deezer'
 import type { ViewId } from './components/navigation'
@@ -15,6 +16,10 @@ import { CheckIcon } from './components/icons'
 
 const ARTISTS_KEY = 'spotinder:artists'
 const LIKED_KEY = 'spotinder:liked'
+const SUGGESTIONS_KEY = 'spotinder:artist-suggestions'
+const PLAYED_KEY = 'spotinder:played'
+const MAX_SUGGESTIONS = 12
+const MAX_PLAYED = 500
 
 function loadStored<T>(key: string): T[] {
   try {
@@ -38,21 +43,35 @@ function App() {
   const [liked, setLiked] = useState<DeezerTrack[]>(() =>
     loadStored<DeezerTrack>(LIKED_KEY),
   )
+  const [suggestions, setSuggestions] = useState<number[]>(() =>
+    loadStored<number>(SUGGESTIONS_KEY),
+  )
+  const [played, setPlayed] = useState<number[]>(() =>
+    loadStored<number>(PLAYED_KEY),
+  )
   const [loading, setLoading] = useState<boolean>(() => artists.length > 0)
   const [error, setError] = useState<string | null>(null)
 
-  const generateDeck = useCallback(async (artistList: DeezerArtist[]) => {
-    try {
-      const tracks = await fetchDeckTracks(artistList)
-      setQueue(tracks)
-      setError(null)
-    } catch (err) {
-      setError(err instanceof DeezerError ? err.message : 'Failed to build your deck')
-      setQueue([])
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const generateDeck = useCallback(
+    async (artistList: DeezerArtist[], taste: number[], playedIds: number[]) => {
+      const seeds: DeckSeeds = {
+        artists: artistList,
+        suggestions: taste,
+        played: playedIds,
+      }
+      try {
+        const tracks = await fetchDeckTracks(seeds)
+        setQueue(tracks)
+        setError(null)
+      } catch (err) {
+        setError(err instanceof DeezerError ? err.message : 'Failed to build your deck')
+        setQueue([])
+      } finally {
+        setLoading(false)
+      }
+    },
+    [],
+  )
 
   // First visit: builds the initial deck from saved artists and refreshes the
   // top-10 defaults from the live charts when possible.
@@ -61,7 +80,8 @@ function App() {
     if (booted.current) return
     booted.current = true
     if (artists.length > 0) {
-      fetchDeckTracks(artists)
+      const seeds: DeckSeeds = { artists, suggestions, played }
+      fetchDeckTracks(seeds)
         .then((tracks) => {
           setQueue(tracks)
           setError(null)
@@ -90,15 +110,29 @@ function App() {
     try {
       localStorage.setItem(ARTISTS_KEY, JSON.stringify(artists))
       localStorage.setItem(LIKED_KEY, JSON.stringify(liked))
+      localStorage.setItem(SUGGESTIONS_KEY, JSON.stringify(suggestions))
+      localStorage.setItem(PLAYED_KEY, JSON.stringify(played))
     } catch {
       // storage unavailable — ignore
     }
-  }, [artists, liked])
+  }, [artists, liked, suggestions, played])
 
   const handleSwipe = useCallback((direction: 'nope' | 'like' | 'love') => {
     setQueue((current) => {
       const [top, ...rest] = current
+      if (top) {
+        // Whatever the outcome, the top track has been played — never again.
+        setPlayed((prev) =>
+          prev.includes(top.id) ? prev : [...prev, top.id].slice(-MAX_PLAYED),
+        )
+      }
       if (top && (direction === 'like' || direction === 'love')) {
+        // Liking a track adds its artist to the taste seeds for future decks.
+        setSuggestions((prev) =>
+          prev.some((id) => id === top.artist.id)
+            ? prev
+            : [...prev, top.artist.id].slice(-MAX_SUGGESTIONS),
+        )
         setLiked((prev) => (prev.some((t) => t.id === top.id) ? prev : [top, ...prev]))
       }
       return rest
@@ -117,14 +151,14 @@ function App() {
     if (artists.length === 0) return
     setView('discover')
     setLoading(true)
-    void generateDeck(artists)
-  }, [artists, generateDeck])
+    void generateDeck(artists, suggestions, played)
+  }, [artists, suggestions, played, generateDeck])
 
   const refill = useCallback(() => {
     if (artists.length === 0) return
     setLoading(true)
-    void generateDeck(artists)
-  }, [artists, generateDeck])
+    void generateDeck(artists, suggestions, played)
+  }, [artists, suggestions, played, generateDeck])
 
   const addLiked = useCallback((track: DeezerTrack) => {
     setLiked((prev) => (prev.some((t) => t.id === track.id) ? prev : [track, ...prev]))

@@ -42,8 +42,8 @@ export function DiscoverView({
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-frost">For you</h1>
           <p className="pt-1 text-[13px] leading-snug text-ash">
-            Built from your {artistCount} artist{artistCount === 1 ? '' : 's'} · swipe
-            right to like, left to pass, up to love
+            From your {artistCount} artist{artistCount === 1 ? '' : 's'} and related picks ·
+            swipe right to like, left to pass, up to love
           </p>
         </div>
         <button

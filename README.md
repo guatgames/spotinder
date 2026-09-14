@@ -87,8 +87,8 @@ SPA redirect.
 
 ## Roadmap
 
-1. **Preview playback** — 30s `track.preview` on every card (done: tap ▶ on any track, one preview at a time)
+1. **Preview playback** — 30s `track.preview` on every card (done: tap ▶ on any track, autoplay in Discover, one preview at a time)
 2. **Match moment** — animated "It's a match" after a Love swipe, shareable deck screenshots
 3. **Playlist sync + auth** — Deezer OAuth (`DEEZER_APP_ID`), Edge `/auth/token`, create/append a "Spotinder" playlist from Liked
-4. **Smarter decks** — suggestions feed by liked-artist seeds, weighted shuffle
+4. **Smarter decks** — related-artist seeding + adaptive taste suggestions (done: Discover mixes liked-artist and related-artist top tracks, liking a track seeds its artist into future decks, and already-played tracks are never dealt again)
 5. **Polish** — optimistic caching, strict `ALLOWED_ORIGIN`, Netlify rate limiting, tests
