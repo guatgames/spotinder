@@ -1,0 +1,44 @@
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    color: var(--color-frost);
+    background: var(--color-abyss);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  button {
+    font: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  input {
+    font: inherit;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-brand) 60%, transparent);
+    color: var(--color-frost);
+  }
+
+  /* iPhone-style scrollbars (WebKit) */
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
