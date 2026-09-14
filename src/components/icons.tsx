@@ -68,6 +68,22 @@ export function NopeIcon({ size = 22, className = '' }: IconProps) {
   )
 }
 
+export function ChevronLeftIcon({ size = 16, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} className={className}>
+      <path d="m14.5 6-6 6 6 6" />
+    </svg>
+  )
+}
+
+export function ChevronRightIcon({ size = 16, className = '' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} className={className}>
+      <path d="m9.5 6 6 6-6 6" />
+    </svg>
+  )
+}
+
 export function LoveIcon({ size = 22, className = '' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" {...base} className={className}>

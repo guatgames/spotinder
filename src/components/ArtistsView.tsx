@@ -180,7 +180,6 @@ export function ArtistsView({
   async function runSearch(q: string) {
     const term = q.trim()
     if (!term) return
-    setQuery(term)
     setSearching(true)
     setError(null)
     try {

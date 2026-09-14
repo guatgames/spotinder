@@ -9,6 +9,16 @@ export interface DeezerArtist {
   tracklist?: string
 }
 
+export interface DeezerGenre {
+  id: number
+  name: string
+  picture?: string
+  picture_small?: string
+  picture_medium?: string
+  picture_big?: string
+  picture_xl?: string
+}
+
 export interface DeezerAlbum {
   id: number
   title: string

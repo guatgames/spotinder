@@ -4,7 +4,9 @@ import type {
   DeezerArtist,
   DeezerArtistPage,
   DeezerChartResponse,
+  DeezerChartTracks,
   DeezerErrorBody,
+  DeezerGenre,
   DeezerSearchResponse,
   DeezerSuggestionsResponse,
   DeezerTrack,
@@ -100,6 +102,14 @@ export const deezer = {
         playlists_limit: limit,
       },
     }),
+
+  getChartTracks: (limit = 20) =>
+    proxy<DeezerChartTracks>({
+      endpoint: '/chart/0/tracks',
+      params: { limit },
+    }),
+
+  getGenres: () => proxy<{ data: DeezerGenre[] }>({ endpoint: '/genre' }),
 
   getSuggestions: (query: string, limit = 8) =>
     proxy<DeezerSuggestionsResponse>({

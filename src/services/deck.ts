@@ -117,3 +117,49 @@ export async function getArtistRecommendations(
     .filter((artist) => !likedIds.has(artist.id))
     .slice(0, limit)
 }
+
+// Browse "made for you" tracks for the Search section: top tracks from the
+// taste seeds (liked artists + artists born from likes), widened with related
+// artists' top tracks when the primary pool undershoots the target.
+export async function getRecommendedTracks(
+  seedArtistIds: number[],
+  limit = 18,
+): Promise<DeezerTrack[]> {
+  const ids = [...new Set(seedArtistIds)].slice(-MAX_SUGGESTIONS)
+  if (ids.length === 0) return []
+
+  const primary = uniqueById(
+    (
+      await Promise.all(
+        ids.map((id) => deezer.getArtistTopTracks(id, 4).catch(() => null)),
+      )
+    ).flatMap((batch) => batch?.data ?? []),
+  )
+
+  if (primary.length >= limit) return primary.slice(0, limit)
+
+  const related = uniqueById(
+    (
+      await Promise.all(
+        ids
+          .slice(0, 4)
+          .map((id) => deezer.getArtistRelated(id, 8).catch(() => null)),
+      )
+    ).flatMap((batch) => batch?.data ?? []),
+  )
+    .filter((artist) => !ids.includes(artist.id))
+    .slice(0, 5)
+
+  const widened = uniqueById([
+    ...primary,
+    ...(
+      await Promise.all(
+        related.map((artist) =>
+          deezer.getArtistTopTracks(artist.id, 3).catch(() => null),
+        ),
+      )
+    ).flatMap((batch) => batch?.data ?? []),
+  ])
+
+  return widened.slice(0, limit)
+}

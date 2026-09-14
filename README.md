@@ -29,7 +29,9 @@ Function proxy.
   offline fallback) or search any artist — your selection seeds the deck.
 - **Discover** deals a stacked, swipable queue of each liked artist's top tracks
   (right = like, left = pass, up = love; deciding buttons match).
-- **Liked** collects your matches; **Search** can add any catalog track directly.
+- **Liked** collects your matches; **Search** shelves the global chart and a
+  taste-based "Recommended for you" row, live-searches as you type, and can
+  scope results to a genre or one of your artists before adding tracks directly.
 - Artists + liked tracks persist in `localStorage` (`spotinder:artists`,
   `spotinder:liked`).
 

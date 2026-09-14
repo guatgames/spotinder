@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { PageHeader } from './components/PageHeader'
 import { MobileNav } from './components/MobileNav'
@@ -170,6 +170,13 @@ function App() {
 
   const likedIds = new Set(liked.map((t) => t.id))
 
+  // Taste seeds shared with the search browse shelf: liked artists + artists
+  // born from likes on Discover.
+  const seedArtistIds = useMemo(
+    () => [...new Set([...artists.map((a) => a.id), ...suggestions])],
+    [artists, suggestions],
+  )
+
   return (
     <div className="app-scene">
       <PageHeader active={view} onNavigate={setView} />
@@ -200,6 +207,8 @@ function App() {
         {view === 'search' && (
           <SearchView
             likedIds={likedIds}
+            seedArtists={artists}
+            seedArtistIds={seedArtistIds}
             onLike={addLiked}
             onUnlike={removeLiked}
           />
