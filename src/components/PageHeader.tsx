@@ -1,5 +1,4 @@
 import { NAV_ITEMS } from './navigation'
-import { WaveMark } from './icons'
 import type { ViewId } from './navigation'
 
 interface PageHeaderProps {
