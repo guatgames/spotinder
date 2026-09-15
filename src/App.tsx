@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { PageHeader } from './components/PageHeader'
+import { MobileNav } from './components/MobileNav'
 import { DiscoverView } from './components/DiscoverView'
 import { SearchView } from './components/SearchView'
 import { LikedView } from './components/LikedView'
@@ -233,6 +234,8 @@ function App() {
           </button>
         </motion.div>
       )}
+
+      <MobileNav active={view} onNavigate={setView} />
     </div>
   )
 }
