@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { PageHeader } from './components/PageHeader'
 import { MobileNav } from './components/MobileNav'
+import { Footer } from './components/Footer'
 import { DiscoverView } from './components/DiscoverView'
 import { SearchView } from './components/SearchView'
 import { LikedView } from './components/LikedView'
@@ -214,6 +215,8 @@ function App() {
           />
         )}
       </main>
+
+      <Footer />
 
       {view === 'artists' && artists.length > 0 && (
         <motion.div
