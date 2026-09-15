@@ -156,6 +156,19 @@
     }
   }
 
+  .app-footer {
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 20px 0 calc(100px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  @media (min-width: 768px) {
+    .app-footer {
+      padding: 24px 0 32px;
+    }
+  }
+
   @media (max-width: 767px) {
     .mobile-tabbar {
       display: flex;
